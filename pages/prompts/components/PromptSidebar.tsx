@@ -89,7 +89,7 @@ const PromptSidebar: React.FC<PromptSidebarProps> = ({ onSearch, onFilterChange 
   };
 
   return (
-    <aside className="w-72 h-[calc(100vh-5rem)] md:h-[calc(100vh-7rem)] fixed left-0 top-20 md:top-28 z-30 flex flex-col bg-[#020204]/60 backdrop-blur-xl border-r border-t border-white/15 shadow-[6px_0_40px_rgba(255,255,255,0.15)] transform-gpu rounded-tr-2xl hidden md:flex">
+    <aside className="w-72 h-[calc(100vh-4rem)] md:h-[calc(100vh-5rem)] fixed left-0 top-16 md:top-20 z-30 flex flex-col bg-[#020204]/60 backdrop-blur-xl border-r border-t border-white/15 shadow-[6px_0_40px_rgba(255,255,255,0.15)] transform-gpu rounded-tr-2xl hidden md:flex">
       <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-5">
         
         {/* Module Title */}

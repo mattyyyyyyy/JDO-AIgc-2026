@@ -16,7 +16,6 @@ export enum Page {
   TTS = 'tts',
   VOICE_CLONING = 'voice-cloning',
   VOICEPRINT = 'voiceprint',
-  LIVE_CHAT = 'live-chat',
   PROMPT_DISCOVER = 'prompt-discover',
   PROMPT_FAVORITES = 'prompt-favorites',
   PROMPT_MINE = 'prompt-mine',

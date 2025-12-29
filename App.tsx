@@ -3,6 +3,7 @@ import Landing from './pages/digital-human/Landing';
 import Studio from './components/Studio';
 import Navbar from './components/Navbar';
 import CursorSystem from './components/CursorSystem';
+import { AnimatePresence, motion } from 'framer-motion';
 
 // AI Voice Module Components
 import Home from './pages/voice/Home';
@@ -10,7 +11,6 @@ import ASR from './pages/voice/ASR';
 import TTS from './pages/voice/TTS';
 import VoiceCloning from './pages/voice/VoiceCloning';
 import Diarization from './pages/voice/Diarization'; 
-import LiveChat from './pages/voice/LiveChat';
 import VoiceLibrary from './pages/voice/VoiceLibrary';
 import VoiceSidebar from './pages/voice/components/VoiceSidebar';
 import VoicePlayer from './pages/voice/components/VoicePlayer';
@@ -87,6 +87,7 @@ const AppContent: React.FC = () => {
 
   // Tab switching logic
   const handleTabChange = (tabId: string) => {
+    if (activeTab === tabId) return;
     setActiveTab(tabId as any);
     closePlayer(); // Stop audio when switching modules
     if (tabId === 'digital-human') {
@@ -102,6 +103,20 @@ const AppContent: React.FC = () => {
     setSavedAssets(prev => [asset, ...prev]);
   };
 
+  // Determine if Navbar should be hidden (only in DH sub-pages)
+  const isDHStudio = activeTab === 'digital-human' && currentDHModule !== null;
+
+  // Page Transition Configuration
+  // Note: mode="wait" is removed from AnimatePresence to allow cross-fading
+  const pageVariants = {
+    initial: { opacity: 0, scale: 0.96, filter: 'blur(8px)' },
+    animate: { opacity: 1, scale: 1, filter: 'blur(0px)' },
+    exit: { opacity: 0, scale: 1.04, filter: 'blur(8px)' }
+  };
+  
+  // Shortened duration to 0.4s for snappiness
+  const pageTransition = { duration: 0.4, ease: "easeInOut" };
+
   // Renderers
   const renderAiVoiceModule = () => {
     const renderSubPage = () => {
@@ -111,7 +126,6 @@ const AppContent: React.FC = () => {
         case Page.TTS: return <TTS />;
         case Page.VOICE_CLONING: return <VoiceCloning />;
         case Page.VOICEPRINT: return <Diarization />; 
-        case Page.LIVE_CHAT: return <LiveChat />;
         case Page.PRESET:
         case Page.CUSTOM:
           return <VoiceLibrary onNavigate={setCurrentPage} initialTab={currentPage} />;
@@ -120,7 +134,7 @@ const AppContent: React.FC = () => {
     };
 
     return (
-      <div className="flex h-full w-full pt-16 md:pt-20">
+      <div className="flex h-full w-full pt-20 md:pt-24">
         <VoiceSidebar currentPage={currentPage} onNavigate={setCurrentPage} />
         <main className="flex-1 ml-72 px-8 pb-8 h-full overflow-hidden hidden md:block">
           {renderSubPage()}
@@ -146,11 +160,7 @@ const AppContent: React.FC = () => {
     };
 
     return (
-      <div className="flex h-full w-full pt-16 md:pt-20">
-        {/* Note: PromptDiscover includes its own Sidebar, but for consistent layout we might want a PromptSidebar wrapper here if PromptDiscover was just content. 
-            However, looking at PromptDiscover code, it has the Sidebar built-in. 
-            For Favorites/Mine/Create, we might need navigation. 
-            Let's use the PromptDiscover for main view and wrap others. */}
+      <div className="flex h-full w-full pt-20 md:pt-24">
         {currentPage === Page.PROMPT_DISCOVER ? (
            <main className="w-full h-full">
              <PromptDiscover />
@@ -163,9 +173,6 @@ const AppContent: React.FC = () => {
       </div>
     );
   };
-
-  // Determine if Navbar should be hidden (only in DH sub-pages)
-  const isDHStudio = activeTab === 'digital-human' && currentDHModule !== null;
 
   return (
     <div className="relative flex flex-col h-screen w-full overflow-hidden">
@@ -180,28 +187,64 @@ const AppContent: React.FC = () => {
         />
       )}
 
-      {activeTab === 'digital-human' && (
-        <main className={`relative z-10 w-full h-full ${!isDHStudio ? 'pt-0' : 'pt-0'}`}>
-          {!currentDHModule ? (
-            <Landing onSelectModule={setCurrentDHModule} />
-          ) : (
-            <Studio 
-              module={currentDHModule}
-              onChangeModule={setCurrentDHModule}
-              lang={lang === 'zh' ? 'CN' : 'EN'}
-              setLang={() => {}}
-              onBack={() => setCurrentDHModule(null)}
-              onOpenSettings={() => {}}
-              savedAssets={savedAssets}
-              onSaveAsset={handleSaveAsset}
-              t={t}
-            />
-          )}
-        </main>
-      )}
+      {/* Cross-fade enabled by removing mode="wait" and using absolute positioning on children */}
+      <AnimatePresence>
+        {activeTab === 'digital-human' && (
+          <motion.main 
+            key="digital-human"
+            variants={pageVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={pageTransition}
+            className={`absolute inset-0 z-10 w-full h-full ${!isDHStudio ? 'pt-0' : 'pt-0'}`}
+          >
+            {!currentDHModule ? (
+              <Landing onSelectModule={setCurrentDHModule} />
+            ) : (
+              <Studio 
+                module={currentDHModule}
+                onChangeModule={setCurrentDHModule}
+                lang={lang === 'zh' ? 'CN' : 'EN'}
+                setLang={() => {}}
+                onBack={() => setCurrentDHModule(null)}
+                onOpenSettings={() => {}}
+                savedAssets={savedAssets}
+                onSaveAsset={handleSaveAsset}
+                t={t}
+              />
+            )}
+          </motion.main>
+        )}
 
-      {activeTab === 'ai-voice' && renderAiVoiceModule()}
-      {activeTab === 'prompt-engine' && renderPromptModule()}
+        {activeTab === 'ai-voice' && (
+          <motion.div 
+            key="ai-voice"
+            variants={pageVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={pageTransition}
+            className="absolute inset-0 w-full h-full"
+          >
+            {renderAiVoiceModule()}
+          </motion.div>
+        )}
+
+        {activeTab === 'prompt-engine' && (
+          <motion.div 
+            key="prompt-engine"
+            variants={pageVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={pageTransition}
+            className="absolute inset-0 w-full h-full"
+          >
+            {renderPromptModule()}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Put CursorSystem last to ensure highest stacking order in the DOM */}
       <CursorSystem />

@@ -262,7 +262,6 @@ export const NAV_GROUPS = [
       { id: Page.TTS, label: '语音合成', icon: 'Speaker' },
       { id: Page.VOICE_CLONING, label: '声音克隆', icon: 'Copy' },
       { id: Page.VOICEPRINT, label: '声纹识别', icon: 'Users' },
-      { id: Page.LIVE_CHAT, label: '实时对话', icon: 'Zap' },
     ]
   }
 ];

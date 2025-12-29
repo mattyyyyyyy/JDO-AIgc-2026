@@ -289,7 +289,7 @@ const Landing: React.FC<LandingProps> = ({ onSelectModule }) => {
           <div className="flex items-center justify-center min-h-[60px] md:min-h-[120px]">
              <Typewriter phrases={typewriterPhrases} />
           </div>
-          <p className="text-white/40 text-xs md:text-sm tracking-[0.3em] md:tracking-[0.4em] uppercase font-bold mt-2 md:mt-4 animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-500 px-4 text-center">
+          <p className="text-white text-base md:text-xl tracking-[0.3em] md:tracking-[0.5em] uppercase font-bold mt-4 md:mt-6 animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-500 px-4 text-center drop-shadow-[0_0_15px_rgba(255,255,255,0.8)]">
             {t_dh.heroSubtitle}
           </p>
       </div>

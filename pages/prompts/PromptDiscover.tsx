@@ -29,8 +29,8 @@ const PromptDiscover: React.FC = () => {
       
       {/* Main Content Waterfall Area */}
       <div className="flex-1 ml-72 px-8 pt-0 pb-8 overflow-hidden flex flex-col">
-        {/* Module Header - Simplified & Optimized Spacing to match Home Page style */}
-        <div className="flex flex-col shrink-0 pt-4 pb-2 space-y-2">
+        {/* Module Header - Reduced spacing to raise title */}
+        <div className="flex flex-col shrink-0 pt-1 pb-2 space-y-2">
           <h1 className="text-5xl font-light text-white tracking-[0.2em]">“灵感”咒语库</h1>
           <div className="text-[11px] font-normal text-white/50 uppercase tracking-[0.3em] ml-1">
             寻找适合您想法的提示词
