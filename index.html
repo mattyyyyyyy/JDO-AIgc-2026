@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Audio Spark | AIGC Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            fontFamily: {
+              sans: ['"Inter"', '"Noto Sans SC"', '"PingFang SC"', '"Microsoft YaHei"', 'sans-serif'],
+              mono: ['"JetBrains Mono"', 'monospace'],
+            },
+            colors: {
+              spark: {
+                bg: '#050505',      
+                surface: '#0d0d12', 
+                text: '#ffffff',    
+                accent: '#3b82f6',  
+                amber: '#f59e0b',
+                dark: '#1e3a8a',    
+              },
+            },
+            animation: {
+              'pulse-slow': 'pulse 8s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+              'float': 'float 6s ease-in-out infinite',
+              'star-btn': 'star-btn calc(var(--duration) * 1s) linear infinite',
+            },
+            keyframes: {
+              float: {
+                '0%, 100%': { transform: 'translateY(0px)' },
+                '50%': { transform: 'translateY(-10px)' },
+              },
+              'star-btn': {
+                '0%': { offsetDistance: '0%' },
+                '100%': { offsetDistance: '100%' },
+              },
+            }
+          },
+        },
+      }
+    </script>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: transparent; 
+        color: #ffffff;
+        min-height: 100vh;
+        overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+      }
+
+      /* 1. 最底层：背景图片层 */
+      #global-bg-image {
+        position: fixed;
+        inset: 0;
+        z-index: -3;
+        background-color: #050505; 
+        background-image: url('https://github.com/mattyyyyyyy/picture2bed/blob/main/%E8%93%9D%E8%89%B2%E7%A7%91%E6%8A%80%E6%84%9F%E6%8A%BD%E8%B1%A1%E5%9B%BE1.png?raw=true');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        pointer-events: none;
+        filter: saturate(1.2) brightness(0.9);
+        /* 增加平滑过渡 */
+        transition: background-image 0.8s ease-in-out;
+      }
+
+      /* 2. 中间层：轻度毛玻璃遮罩 */
+      #global-bg-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: -2;
+        background-color: rgba(0, 0, 0, 0.15); 
+        /* Reduced blur from 20px to 12px for better clarity */
+        backdrop-filter: blur(12px); 
+        -webkit-backdrop-filter: blur(12px);
+        pointer-events: none;
+      }
+
+      /* 3. 顶层装饰：噪点层 (Texture) */
+      #global-bg-noise {
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        opacity: 0.04;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        pointer-events: none;
+        mix-blend-mode: soft-light;
+      }
+      
+      .glass-panel {
+        background: rgba(255, 255, 255, 0.035);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        border: 1px solid rgba(255, 255, 255, 0.12); 
+      }
+
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 5px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+      
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+
+      input[type='range'].glow-slider {
+        -webkit-appearance: none;
+        appearance: none;
+        background: rgba(255, 255, 255, 0.05);
+        height: 4px;
+        border-radius: 2px;
+      }
+      input[type='range'].glow-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 14px;
+        height: 14px;
+        background: #ffffff;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "@google/genai": "https://esm.sh/@google/genai@^1.33.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.561.0",
+    "react-dom": "https://esm.sh/react-dom@^19.2.3",
+    "framer-motion": "https://esm.sh/framer-motion@^11.11.11",
+    "three": "https://esm.sh/three@^0.182.0"
+  }
+}
+</script>
+</head>
+  <body>
+    <!-- 独立的层级结构 -->
+    <div id="global-bg-image"></div>
+    <div id="global-bg-overlay"></div>
+    <div id="global-bg-noise"></div>
+    <div id="root"></div>
+  </body>
+</html>
