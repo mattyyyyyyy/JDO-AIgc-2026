@@ -56,7 +56,7 @@ const Typewriter = memo(({ phrases }: TypewriterProps) => {
   }, [displayText, isDeleting, phraseIndex, typingSpeed, phrases]);
 
   return (
-    <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-normal text-center tracking-[0.1em] md:tracking-[0.2em] leading-tight text-white drop-shadow-[0_0_35px_rgba(255,255,255,0.8)] min-h-[1.2em] px-4">
+    <h1 className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-normal text-center tracking-[0.1em] md:tracking-[0.2em] leading-tight text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.6)] min-h-[1.2em] px-4">
       {displayText}
       <span className="ml-1 animate-[blink_1s_step-end_infinite]">_</span>
     </h1>
@@ -268,7 +268,7 @@ const Landing: React.FC<LandingProps> = ({ onSelectModule }) => {
   ], [t_dh.heroTitle]);
 
   return (
-    <main className="w-full h-full flex flex-col items-center relative overflow-hidden">
+    <main className="w-full h-full flex flex-col items-center relative overflow-hidden bg-black">
       {/* Background Video */}
       <div className="absolute inset-0 z-0">
         <video 
@@ -285,17 +285,20 @@ const Landing: React.FC<LandingProps> = ({ onSelectModule }) => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40 pointer-events-none" />
       </div>
 
-      <div className="flex flex-col items-center mt-[15vh] md:mt-[22vh] z-20 pointer-events-none transition-[margin] duration-500">
-          <div className="flex items-center justify-center min-h-[60px] md:min-h-[120px]">
+      {/* Hero Text Section: Adjusted spacing to prevent overlapping cards */}
+      <div className="flex flex-col items-center justify-center pt-[12vh] md:pt-[18vh] z-20 pointer-events-none transition-all duration-500 w-full px-4 sm:px-0">
+          <div className="flex items-center justify-center min-h-[3rem] sm:min-h-[4rem] md:min-h-[7rem] lg:min-h-[9rem]">
              <Typewriter phrases={typewriterPhrases} />
           </div>
-          <p className="text-white text-base md:text-xl tracking-[0.3em] md:tracking-[0.5em] uppercase font-bold mt-4 md:mt-6 animate-in fade-in slide-in-from-bottom-2 duration-1000 delay-500 px-4 text-center drop-shadow-[0_0_15px_rgba(255,255,255,0.8)]">
+          {/* Subtitle: Bigger, Glowing, Responsive */}
+          <p className="text-white text-sm sm:text-lg md:text-2xl lg:text-3xl tracking-[0.2em] sm:tracking-[0.3em] md:tracking-[0.5em] uppercase font-bold mt-4 md:mt-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-500 text-center drop-shadow-[0_0_20px_rgba(255,255,255,0.7)]">
             {t_dh.heroSubtitle}
           </p>
       </div>
 
-      <div className={`relative flex-1 w-full flex items-center justify-center mt-0 max-w-7xl perspective-1000 z-10 transition-opacity duration-300 ${animData ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-         <div className="relative h-[400px] md:h-[500px] w-full flex justify-center items-center" style={{ transform: `scale(${deckScale})`, transformOrigin: 'center center' }}>
+      {/* Cards Section: Relative positioning with flexible space to avoid occlusion */}
+      <div className={`relative flex-1 w-full flex items-center justify-center max-w-[1920px] perspective-1000 z-10 transition-opacity duration-300 pb-8 md:pb-0 ${animData ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+         <div className="relative h-[350px] sm:h-[400px] md:h-[500px] w-full flex justify-center items-center" style={{ transform: `scale(${deckScale})`, transformOrigin: 'center center' }}>
            {featureList.map((feature, index) => (
               <FeatureCard 
                 key={feature.id}

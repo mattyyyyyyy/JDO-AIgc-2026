@@ -99,6 +99,7 @@ export default function Studio({ module, onChangeModule, onBack, t }: StudioProp
   const [selectedVoiceGender, setSelectedVoiceGender] = useState('全部');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedBackground, setSelectedBackground] = useState('bg1');
+  const [zoomLevel, setZoomLevel] = useState(1);
 
   const moduleMenuRef = useRef<HTMLDivElement>(null);
   const { voices } = useVoices();
@@ -140,6 +141,16 @@ export default function Studio({ module, onChangeModule, onBack, t }: StudioProp
     if (selectedVoiceGender === '女声') return v.gender === 'Female';
     return true;
   }).filter(v => v.name.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  const handleWheel = (e: React.WheelEvent) => {
+    e.stopPropagation();
+    const delta = -e.deltaY * 0.001;
+    setZoomLevel(prev => Math.min(Math.max(prev + delta, 0.5), 3.0));
+  };
+
+  const handleZoomIn = () => setZoomLevel(prev => Math.min(prev + 0.2, 3.0));
+  const handleZoomOut = () => setZoomLevel(prev => Math.max(prev - 0.2, 0.5));
+  const handleResetZoom = () => setZoomLevel(1);
 
   const renderSidebarContent = () => {
     switch(rightSidebarTab) {
@@ -366,6 +377,7 @@ export default function Studio({ module, onChangeModule, onBack, t }: StudioProp
              <div 
                className="relative border-2 border-white/40 rounded-3xl overflow-hidden shadow-[0_0_50px_rgba(255,255,255,0.1)] bg-[#111]"
                style={{ aspectRatio: '2/3', height: '80%' }}
+               onWheel={handleWheel}
              >
                {(is3D || is2DAvatar) ? (
                  <div className="w-full h-full flex flex-col items-center justify-center relative overflow-hidden">
@@ -380,7 +392,10 @@ export default function Studio({ module, onChangeModule, onBack, t }: StudioProp
                     </div>
                     
                     {/* Character Layer */}
-                    <div className="relative z-10 flex flex-col items-center justify-center gap-4 w-full h-full">
+                    <div 
+                      className="relative z-10 flex flex-col items-center justify-center gap-4 w-full h-full transition-transform duration-75 ease-out"
+                      style={{ transform: `scale(${zoomLevel})` }}
+                    >
                         {is3D ? (
                            <>
                               <User size={120} className="text-white drop-shadow-2xl" />
@@ -398,7 +413,8 @@ export default function Studio({ module, onChangeModule, onBack, t }: StudioProp
                ) : (
                  <img 
                    src={MOCK_CHARACTERS.find(c=>c.id===baseModel)?.src || MOCK_CHARACTERS[0].src} 
-                   className="w-full h-full object-cover" 
+                   className="w-full h-full object-cover transition-transform duration-75 ease-out"
+                   style={{ transform: `scale(${zoomLevel})` }} 
                  />
                )}
                {isCallActive && <div className="absolute inset-0 ring-4 ring-green-500/50 animate-pulse pointer-events-none" />}
@@ -407,14 +423,12 @@ export default function Studio({ module, onChangeModule, onBack, t }: StudioProp
              {/* Canvas Zoom Controls */}
              <div className="absolute bottom-8 right-8 flex flex-col gap-2">
                 <div className="flex flex-col gap-1 p-1 bg-black/40 border border-white/10 rounded-lg">
-                   <button className="p-1.5 hover:bg-white/10 rounded"><ZoomIn size={16}/></button>
-                   <button className="p-1.5 hover:bg-white/10 rounded"><ZoomOut size={16}/></button>
+                   <button onClick={handleZoomIn} className="p-1.5 hover:bg-white/10 rounded"><ZoomIn size={16}/></button>
+                   <button onClick={handleZoomOut} className="p-1.5 hover:bg-white/10 rounded"><ZoomOut size={16}/></button>
                 </div>
-                {is3D && (
-                   <div className="flex flex-col gap-1 p-1 bg-black/40 border border-white/10 rounded-lg">
-                      <button className="p-1.5 hover:bg-white/10 rounded"><RefreshCcw size={16}/></button>
-                   </div>
-                )}
+                <div className="flex flex-col gap-1 p-1 bg-black/40 border border-white/10 rounded-lg">
+                   <button onClick={handleResetZoom} className="p-1.5 hover:bg-white/10 rounded"><RefreshCcw size={16}/></button>
+                </div>
              </div>
           </div>
 
@@ -504,7 +518,7 @@ export default function Studio({ module, onChangeModule, onBack, t }: StudioProp
                         className={`aspect-[3/4] rounded-xl border-2 transition-all cursor-pointer overflow-hidden group ${baseModel === char.id ? 'border-white bg-white/10 shadow-[0_0_15px_rgba(255,255,255,0.2)]' : 'border-white/5 hover:border-white/20 bg-black/40'}`}
                       >
                          <div className="w-full h-full relative">
-                            <img src={char.src} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                            <img src={char.src} className="w-full h-full object-cover transition-transform duration-500" />
                             <div className="absolute bottom-0 inset-x-0 p-2 bg-gradient-to-t from-black via-black/40 to-transparent">
                                <p className="text-[9px] font-bold text-white truncate text-center">{char.name}</p>
                             </div>
