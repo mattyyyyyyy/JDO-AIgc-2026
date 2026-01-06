@@ -168,9 +168,12 @@ const Landing: React.FC<LandingProps> = ({ onSelectModule }) => {
       timeoutId = window.setTimeout(() => {
         const baseWidth = 1536; 
         const baseHeight = 864;
-        // Allow scaling down more aggressively for mobile (0.35 min)
-        const widthScale = Math.min(1, Math.max(0.35, window.innerWidth / baseWidth));
-        const heightScale = Math.min(1, Math.max(0.35, window.innerHeight / baseHeight));
+        
+        // Slightly increased minimum scale to ensure visibility on small mobile screens
+        const widthScale = Math.min(1, Math.max(0.45, window.innerWidth / baseWidth));
+        // Use height for scaling but don't shrink too aggressively to support scrolling
+        const heightScale = Math.min(1, Math.max(0.6, window.innerHeight / baseHeight));
+        
         setDeckScale(Math.min(widthScale, heightScale));
       }, 50);
     };
@@ -268,9 +271,10 @@ const Landing: React.FC<LandingProps> = ({ onSelectModule }) => {
   ], [t_dh.heroTitle]);
 
   return (
-    <main className="w-full h-full flex flex-col items-center relative overflow-hidden bg-black">
-      {/* Background Video */}
-      <div className="absolute inset-0 z-0">
+    // Changed overflow-hidden to overflow-y-auto to allow scrolling on small screens
+    <main className="w-full h-full flex flex-col items-center relative overflow-y-auto overflow-x-hidden bg-black custom-scrollbar">
+      {/* Background Video - Fixed position to stay while scrolling */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
         <video 
           src={BG_VIDEO_URL}
           autoPlay
@@ -285,8 +289,8 @@ const Landing: React.FC<LandingProps> = ({ onSelectModule }) => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40 pointer-events-none" />
       </div>
 
-      {/* Hero Text Section: Adjusted spacing to prevent overlapping cards */}
-      <div className="flex flex-col items-center justify-center pt-[12vh] md:pt-[18vh] z-20 pointer-events-none transition-all duration-500 w-full px-4 sm:px-0">
+      {/* Hero Text Section: Reduced PT to 12vh to pull up */}
+      <div className="flex flex-col items-center justify-center pt-[12vh] pb-8 shrink-0 z-20 pointer-events-none transition-all duration-500 w-full px-4 sm:px-0">
           <div className="flex items-center justify-center min-h-[3rem] sm:min-h-[4rem] md:min-h-[7rem] lg:min-h-[9rem]">
              <Typewriter phrases={typewriterPhrases} />
           </div>
@@ -296,9 +300,10 @@ const Landing: React.FC<LandingProps> = ({ onSelectModule }) => {
           </p>
       </div>
 
-      {/* Cards Section: Relative positioning with flexible space to avoid occlusion */}
-      <div className={`relative flex-1 w-full flex items-center justify-center max-w-[1920px] perspective-1000 z-10 transition-opacity duration-300 pb-8 md:pb-0 ${animData ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-         <div className="relative h-[350px] sm:h-[400px] md:h-[500px] w-full flex justify-center items-center" style={{ transform: `scale(${deckScale})`, transformOrigin: 'center center' }}>
+      {/* Cards Section: Reduced min-h to 400px to avoid forcing scroll too early */}
+      <div className={`relative flex-1 w-full flex items-center justify-center max-w-[1920px] perspective-1000 z-10 transition-opacity duration-300 min-h-[400px] ${animData ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+         {/* Inner container with REDUCED responsive bottom margin to fix excessive whitespace */}
+         <div className="relative h-[350px] sm:h-[400px] md:h-[500px] w-full flex justify-center items-center mb-[60px] sm:mb-[80px] md:mb-[100px]" style={{ transform: `scale(${deckScale})`, transformOrigin: 'center center' }}>
            {featureList.map((feature, index) => (
               <FeatureCard 
                 key={feature.id}

@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import GlassCard from '../../components/GlassCard';
@@ -68,8 +67,8 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       onScroll={handleScroll}
       className="space-y-6 animate-in fade-in duration-1000 pb-20 overflow-y-auto h-full pr-2 custom-scrollbar scroll-smooth"
     >
-      <div className="space-y-2 mt-2">
-        <h1 className="text-5xl font-light text-white tracking-[0.2em]">{t('home_title')}</h1>
+      <div className="space-y-1">
+        <h1 className="text-5xl font-light text-white tracking-[0.2em] leading-none">{t('home_title')}</h1>
         <p className="text-white/50 text-[11px] font-normal uppercase tracking-[0.3em] ml-1">专业级 AI 语音合成与创作平台</p>
       </div>
 

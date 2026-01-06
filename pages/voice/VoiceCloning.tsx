@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { 
@@ -110,7 +109,7 @@ const VoiceCloning: React.FC = () => {
   };
 
   return (
-    <div className="h-full flex flex-col pt-2 animate-in fade-in duration-500 overflow-hidden relative">
+    <div className="h-full flex flex-col pt-0 animate-in fade-in duration-500 overflow-hidden relative">
       <div className="mb-2 shrink-0">
         <h1 className="text-2xl font-light text-white tracking-tight uppercase drop-shadow-[0_0_10px_rgba(255,255,255,0.2)]">声音克隆</h1>
         <p className="text-[11px] font-normal text-white/50 uppercase tracking-[0.2em] mt-1">训练专属 AI 数字孪生音色</p>
@@ -213,14 +212,14 @@ const VoiceCloning: React.FC = () => {
             </div>
           </div>
 
-          <div className="h-20 border-t border-white/10 bg-black/60 backdrop-blur-3xl flex justify-between items-center px-10 shrink-0 relative z-20">
+          <div className="h-16 border-t border-white/5 bg-black/40 backdrop-blur-xl flex justify-between items-center px-6 shrink-0 relative z-20">
               <div className="flex items-center gap-3">
                  <div className="w-2 h-2 rounded-full bg-spark-accent shadow-[0_0_10px_rgba(59,130,246,0.8)] animate-pulse" />
                  <span className="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">高质量录音样本将获得更完美的克隆效果</span>
               </div>
-              <div className="flex items-center gap-6">
-                 <button onClick={() => {setFile(null); setProjectName(''); setDescription('');}} className="p-3 text-white/20 hover:text-white transition-all hover:bg-white/5 rounded-xl"><RotateCcw size={18} /></button>
-                 <StarButton onClick={handleCreate} disabled={!file || !projectName || isCloning} className="min-w-[180px] h-12 !text-sm !font-black !tracking-[0.2em]">
+              <div className="flex items-center gap-4">
+                 <button onClick={() => {setFile(null); setProjectName(''); setDescription('');}} className="p-2.5 text-white/20 hover:text-white transition-all hover:bg-white/5 rounded-xl"><RotateCcw size={18} /></button>
+                 <StarButton onClick={handleCreate} disabled={!file || !projectName || isCloning} className="min-w-[160px] h-10 !text-sm !font-black !tracking-[0.2em]">
                    {isCloning ? "正在克隆中" : "开始训练模型"}
                  </StarButton>
               </div>
@@ -229,9 +228,9 @@ const VoiceCloning: React.FC = () => {
 
         {/* Sidebar */}
         <div className="w-80 bg-black/20 backdrop-blur-2xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl flex flex-col shrink-0">
-            <div className="h-14 border-b border-white/10 flex items-center px-6 gap-3 bg-white/[0.02] shrink-0">
-                <Settings2 size={18} className="text-spark-accent" />
-                <span className="text-[13px] font-bold text-white uppercase tracking-[0.25em] drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">自定义音色库</span>
+            <div className="h-12 border-b border-white/10 flex items-center px-6 gap-3 bg-white/[0.02] shrink-0">
+                <Settings2 size={16} className="text-spark-accent" />
+                <span className="text-[14px] font-medium text-white uppercase tracking-widest drop-shadow-[0_0_8px_rgba(255,255,255,0.6)]">自定义音色库</span>
             </div>
             <div className="flex-1 overflow-y-auto px-4 py-6 space-y-3 custom-scrollbar">
               {customVoices.length === 0 ? (

@@ -1,4 +1,3 @@
-
 import { 
   Users, 
   FileAudio, 
@@ -16,10 +15,10 @@ import {
   Square, 
   Trash2, 
   Activity, 
-  Info,
-  Play,
-  RefreshCcw,
-  Upload
+  Info, 
+  Play, 
+  RefreshCcw, 
+  Upload 
 } from 'lucide-react';
 import React, { useState, useEffect, useRef } from 'react';
 import { SpeakerSegment, SpeakerIdentity } from '../../types';
@@ -244,7 +243,7 @@ const Diarization: React.FC = () => {
   );
 
   return (
-    <div className="h-full flex flex-col pt-2 animate-in fade-in duration-500 overflow-hidden relative">
+    <div className="h-full flex flex-col pt-0 animate-in fade-in duration-500 overflow-hidden relative">
       <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileChange} accept="audio/*" />
 
       <div className="mb-2 shrink-0 flex items-center justify-between">
@@ -356,9 +355,9 @@ const Diarization: React.FC = () => {
                   const isCloned = speaker.source === 'cloned';
                   
                   return (
-                    <div key={speaker.id} className={`p-4 rounded-xl bg-white/5 backdrop-blur-sm border border-white/5 transition-all group/card ${isEditing ? 'border-spark-accent/40 bg-spark-accent/5' : 'hover:border-white/20 hover:bg-white/10'} ${activeInTranscript && isRecording ? 'ring-1 ring-spark-accent/40 bg-spark-accent/[0.02]' : ''}`}>
-                      <div className="flex items-center gap-4">
-                         <div className={`w-11 h-11 rounded-xl ${speaker.color} overflow-hidden shrink-0 border border-white/10 relative shadow-lg`}>
+                    <div key={speaker.id} className={`p-3 rounded-xl bg-white/5 backdrop-blur-sm border border-white/5 transition-all group/card ${isEditing ? 'border-spark-accent/40 bg-spark-accent/5' : 'hover:border-white/20 hover:bg-white/10'} ${activeInTranscript && isRecording ? 'ring-1 ring-spark-accent/40 bg-spark-accent/[0.02]' : ''}`}>
+                      <div className="flex items-center gap-3">
+                         <div className={`w-10 h-10 rounded-xl ${speaker.color} overflow-hidden shrink-0 border border-white/10 relative shadow-lg`}>
                             <img src={getAvatarUrl(speaker)} alt={speaker.name} className="w-full h-full object-cover" />
                             {activeInTranscript && isRecording && (
                               <div className="absolute inset-0 bg-spark-accent/30 flex items-center justify-center backdrop-blur-[1px]">

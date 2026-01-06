@@ -27,6 +27,7 @@ import { VoiceProvider } from './contexts/VoiceContext';
 import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import { ModuleProvider } from './contexts/ModuleContext';
 import { Page, AppModule, Asset } from './types';
+import { DH_TEXT_CONTENT } from './pages/digital-human/constants';
 
 const AppContent: React.FC = () => {
   // Global Navigation State
@@ -106,17 +107,6 @@ const AppContent: React.FC = () => {
   // Determine if Navbar should be hidden (only in DH sub-pages)
   const isDHStudio = activeTab === 'digital-human' && currentDHModule !== null;
 
-  // Page Transition Configuration
-  // Note: mode="wait" is removed from AnimatePresence to allow cross-fading
-  const pageVariants = {
-    initial: { opacity: 0, scale: 0.96, filter: 'blur(8px)' },
-    animate: { opacity: 1, scale: 1, filter: 'blur(0px)' },
-    exit: { opacity: 0, scale: 1.04, filter: 'blur(8px)' }
-  };
-  
-  // Shortened duration to 0.4s for snappiness
-  const pageTransition = { duration: 0.4, ease: "easeInOut" };
-
   // Renderers
   const renderAiVoiceModule = () => {
     const renderSubPage = () => {
@@ -134,14 +124,10 @@ const AppContent: React.FC = () => {
     };
 
     return (
-      <div className="flex h-full w-full pt-20 md:pt-24">
+      <div className="flex h-full w-full pt-20 md:pt-20">
         <VoiceSidebar currentPage={currentPage} onNavigate={setCurrentPage} />
-        <main className="flex-1 ml-72 px-8 pb-8 h-full overflow-hidden hidden md:block">
+        <main className="flex-1 ml-0 md:ml-72 px-4 md:px-8 pb-8 h-full overflow-hidden">
           {renderSubPage()}
-        </main>
-        {/* Mobile View Placeholder or simplified list */}
-        <main className="flex-1 px-4 pb-4 h-full overflow-hidden block md:hidden pt-4">
-           {renderSubPage()}
         </main>
         <VoicePlayer />
       </div>
@@ -160,23 +146,27 @@ const AppContent: React.FC = () => {
     };
 
     return (
-      <div className="flex h-full w-full pt-20 md:pt-24">
+      <div className="flex h-full w-full pt-20 md:pt-20">
         {currentPage === Page.PROMPT_DISCOVER ? (
            <main className="w-full h-full">
              <PromptDiscover />
            </main>
         ) : (
-           <main className="w-full h-full px-4 md:px-8 pt-4">
+           <main className="w-full h-full px-4 md:px-8">
              {renderSubPage()}
            </main>
         )}
       </div>
     );
   };
+  
+  const t_dh = (DH_TEXT_CONTENT as any)[lang === 'zh' ? 'CN' : 'EN'] || DH_TEXT_CONTENT.CN;
 
   return (
-    <div className="relative flex flex-col h-screen w-full overflow-hidden">
-      
+    <div className="relative flex flex-col h-screen w-full overflow-hidden text-white font-sans selection:bg-blue-500/30 selection:text-white">
+      {/* Background is handled by index.html and useEffect */}
+      <CursorSystem />
+
       {!isDHStudio && (
         <Navbar 
           lang={lang} 
@@ -190,64 +180,49 @@ const AppContent: React.FC = () => {
       {/* Cross-fade enabled by removing mode="wait" and using absolute positioning on children */}
       <AnimatePresence>
         {activeTab === 'digital-human' && (
-          <motion.main 
-            key="digital-human"
-            variants={pageVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            transition={pageTransition}
-            className={`absolute inset-0 z-10 w-full h-full ${!isDHStudio ? 'pt-0' : 'pt-0'}`}
-          >
-            {!currentDHModule ? (
-              <Landing onSelectModule={setCurrentDHModule} />
-            ) : (
-              <Studio 
-                module={currentDHModule}
-                onChangeModule={setCurrentDHModule}
-                lang={lang === 'zh' ? 'CN' : 'EN'}
-                setLang={() => {}}
-                onBack={() => setCurrentDHModule(null)}
-                onOpenSettings={() => {}}
-                savedAssets={savedAssets}
-                onSaveAsset={handleSaveAsset}
-                t={t}
-              />
-            )}
-          </motion.main>
+           <motion.div 
+             key="dh"
+             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+             className="absolute inset-0 w-full h-full"
+           >
+             {currentDHModule ? (
+               <Studio 
+                 module={currentDHModule} 
+                 onChangeModule={setCurrentDHModule}
+                 onBack={() => setCurrentDHModule(null)}
+                 lang={lang === 'zh' ? 'CN' : 'EN'}
+                 setLang={setLang as any}
+                 onOpenSettings={() => {}}
+                 savedAssets={savedAssets}
+                 onSaveAsset={handleSaveAsset}
+                 t={t_dh}
+               />
+             ) : (
+               <Landing onSelectModule={setCurrentDHModule} />
+             )}
+           </motion.div>
         )}
 
         {activeTab === 'ai-voice' && (
-          <motion.div 
-            key="ai-voice"
-            variants={pageVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            transition={pageTransition}
-            className="absolute inset-0 w-full h-full"
-          >
-            {renderAiVoiceModule()}
-          </motion.div>
+           <motion.div 
+             key="voice"
+             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+             className="absolute inset-0 w-full h-full"
+           >
+             {renderAiVoiceModule()}
+           </motion.div>
         )}
 
         {activeTab === 'prompt-engine' && (
-          <motion.div 
-            key="prompt-engine"
-            variants={pageVariants}
-            initial="initial"
-            animate="animate"
-            exit="exit"
-            transition={pageTransition}
-            className="absolute inset-0 w-full h-full"
-          >
-            {renderPromptModule()}
-          </motion.div>
+           <motion.div 
+             key="prompt"
+             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+             className="absolute inset-0 w-full h-full"
+           >
+             {renderPromptModule()}
+           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Put CursorSystem last to ensure highest stacking order in the DOM */}
-      <CursorSystem />
     </div>
   );
 };
@@ -255,15 +230,15 @@ const AppContent: React.FC = () => {
 const App: React.FC = () => {
   return (
     <LanguageProvider>
-      <ModuleProvider>
+      <VoiceProvider>
         <PlayerProvider>
-          <VoiceProvider>
-            <TTSProvider>
+          <TTSProvider>
+            <ModuleProvider>
               <AppContent />
-            </TTSProvider>
-          </VoiceProvider>
+            </ModuleProvider>
+          </TTSProvider>
         </PlayerProvider>
-      </ModuleProvider>
+      </VoiceProvider>
     </LanguageProvider>
   );
 };

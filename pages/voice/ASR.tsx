@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Mic, 
@@ -169,7 +168,7 @@ const ASR: React.FC = () => {
   };
 
   return (
-    <div className="h-full flex flex-col pt-2 animate-in fade-in duration-500 overflow-hidden">
+    <div className="h-full flex flex-col pt-0 animate-in fade-in duration-500 overflow-hidden">
       <div className="mb-2 shrink-0 flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-light text-white tracking-tight uppercase drop-shadow-[0_0_8px_rgba(255,255,255,0.15)]">语音识别</h1>

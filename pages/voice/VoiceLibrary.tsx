@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { translateCategory, CATEGORY_MAP } from '../../constants';
 import { 
@@ -102,9 +101,9 @@ const VoiceLibrary: React.FC<VoiceLibraryProps> = ({ onNavigate, initialTab = Pa
   return (
     <div className="h-full flex flex-col gap-0 animate-in fade-in duration-500 relative">
        {/* Header with increased clarity */}
-       <div className="flex items-center justify-between shrink-0 py-2.5 mb-4 border-b border-white/5 relative z-30">
+       <div className="flex items-center justify-between shrink-0 py-0 mb-4 border-b border-white/5 relative z-30 min-h-[44px]">
           <div className="flex items-center gap-6">
-            <h1 className="text-xl font-medium text-white uppercase tracking-widest shrink-0">
+            <h1 className="text-2xl font-light text-white uppercase tracking-tight drop-shadow-[0_0_8px_rgba(255,255,255,0.15)] shrink-0 leading-none">
               {isCustomPage ? '自定义声音' : '预设声音'}
             </h1>
             
